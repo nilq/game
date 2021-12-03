@@ -36,6 +36,10 @@ love.load = ->
   console.load!
   state\load!
 
+  console.defineCommand "editor", "Toggle level-editor.", ->
+    console.i "Level editor: " .. tostring state.editor
+    state.editor = not state.editor
+
 love.update = (dt) ->
   console.update dt
   input\update!

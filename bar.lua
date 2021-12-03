@@ -25,7 +25,7 @@ make = function()
           mouse_y = game.camera:top() + love.mouse.getY() / game.camera.sy
           local x = mouse_x - mouse_x % game.tile_scale
           local y = mouse_y - mouse_y % game.tile_scale
-          game.level:add_tile(x / game.tile_scale, y / game.tile_scale, self.current.name)
+          level:add_tile(x / game.tile_scale, y / game.tile_scale, self.current.name)
         end
       end
       if love.mouse.isDown(2) then
@@ -33,7 +33,7 @@ make = function()
         mouse_y = game.camera:top() + love.mouse.getY() / game.camera.sy
         local x = (mouse_x - mouse_x % game.tile_scale) / game.tile_scale
         local y = (mouse_y - mouse_y % game.tile_scale) / game.tile_scale
-        return game.level:remove_tile(x, y)
+        return level:remove_tile(x, y)
       end
     end
   end
@@ -115,10 +115,10 @@ make = function()
     end
     if key == "return" then
       if self.mode == "export" then
-        game.level:export_map("maps/" .. tostring(self.file_path) .. ".png")
+        level:export_map("maps/" .. tostring(self.file_path) .. ".png")
       end
       if self.mode == "importing" then
-        game.level:load("maps/" .. tostring(self.file_path) .. ".png")
+        level:load("maps/" .. tostring(self.file_path) .. ".png")
       end
       self.mode = nil
     end

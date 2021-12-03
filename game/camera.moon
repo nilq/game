@@ -28,17 +28,17 @@ make = (x, y, sx, sy, r) ->
 
   --Position of the left border of the camera in the gameworld
   camera.left = =>
-    @x / @sx - @width!/2
+    @x - @width!/2
 
   --Position of the right border of the camera in the gameworld
   camera.right = =>
-    @x / @sx + @width!/2
+    @x + @width!/2
 
   camera.top = =>
-    @y / @sy - @height!/2
+    @y - @height!/2
 
   camera.bot = =>
-    @y / @sy + @height!/2
+    @y + @height!/2
 
   camera
 

@@ -51,7 +51,11 @@ input = baton.new({
 love.load = function()
   world = bump.newWorld()
   console.load()
-  return state:load()
+  state:load()
+  return console.defineCommand("editor", "Toggle level-editor.", function()
+    console.i("Level editor: " .. tostring(state.editor))
+    state.editor = not state.editor
+  end)
 end
 love.update = function(dt)
   console.update(dt)

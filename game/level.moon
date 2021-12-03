@@ -1,5 +1,5 @@
 level =
-  size: 20
+  size: 24
   registry:
     block:  {0, 0, 0}
     player: {1, 1, 0}
@@ -114,9 +114,9 @@ level.add_tile = (x, y, id) => -- returns false if it's adding the same
         return false
 
     --create the tile in the game world
-    tile = objects[id].make x * game.tile_scale, y * game.tile_scale
-    game\spawn tile
-    game.world\add tile, tile.x, tile.y, tile.w, tile.h
+    @spawn id, x * level.size, y * level.size
+
+    print "Spawned: " .. id .. " at (" .. (tostring x) .. ", " .. (tostring y) .. ")"
 
     @map[x][y] = { :id, ref: tile }
 
@@ -136,9 +136,9 @@ level.remove_tile_unchecked = (x, y) =>
   ref\remove!
 
   --Remove from game.objects
-  for i, v in ipairs game.objects
+  for i, v in ipairs e
     if v == ref
-      table.remove game.objects, i
+      e.delete i
       break
 
   --Remove from 2d array

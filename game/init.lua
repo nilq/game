@@ -7,7 +7,8 @@ require("game/sprites")
 game = {
   dt = 0,
   time = 0,
-  tile_scale = 24
+  tile_scale = 24,
+  editor = false
 }
 love.graphics.setBackgroundColor(0.8, 0.8, 0.8)
 game.load = function(self)
@@ -26,18 +27,26 @@ end
 game.update = function(self, dt)
   self.dt = dt
   self.time = self.time + dt
-  self.bar:update(dt)
+  if self.editor then
+    self.bar:update(dt)
+  end
   s(s.player)
   return shack:update(dt)
 end
 game.draw = function(self)
   self.camera:set()
-  self.grid:draw()
+  if self.editor then
+    self.grid:draw()
+  end
   shack:apply()
   s(s.block, s.head)
-  self.grid:draw_highlight()
+  if self.editor then
+    self.grid:draw_highlight()
+  end
   self.camera:unset()
-  return self.bar:draw()
+  if self.editor then
+    return self.bar:draw()
+  end
 end
 game.press = function(self, key)
   return self.bar:press(key)

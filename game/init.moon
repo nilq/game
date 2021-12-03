@@ -12,6 +12,7 @@ export game = {
   dt: 0
   time: 0 -- incrementing forever!!!
   tile_scale: 24
+  editor: false
 }
 
 love.graphics.setBackgroundColor 0.8, 0.8, 0.8
@@ -34,7 +35,7 @@ game.update = (dt) =>
   @dt = dt
   @time += dt
 
-  @bar\update dt
+  @bar\update dt if @editor
 
   s(s.player)
 
@@ -43,17 +44,17 @@ game.update = (dt) =>
 game.draw = =>
   @camera\set!
 
-  @grid\draw!
+  @grid\draw! if @editor
 
   shack\apply!
 
   s(s.block, s.head)
 
-  @grid\draw_highlight!
+  @grid\draw_highlight! if @editor
 
   @camera\unset!
 
-  @bar\draw!
+  @bar\draw! if @editor
 
 game.press = (key) =>
   @bar\press key

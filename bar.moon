@@ -32,7 +32,7 @@ make = ->
             x = mouse_x - mouse_x % game.tile_scale
             y = mouse_y - mouse_y % game.tile_scale
 
-            game.level\add_tile x / game.tile_scale, y / game.tile_scale, @current.name
+            level\add_tile x / game.tile_scale, y / game.tile_scale, @current.name
 
 
       if love.mouse.isDown 2
@@ -42,7 +42,7 @@ make = ->
           x = (mouse_x - mouse_x % game.tile_scale) / game.tile_scale
           y = (mouse_y - mouse_y % game.tile_scale) / game.tile_scale
 
-          game.level\remove_tile x, y
+          level\remove_tile x, y
 
   bar.draw = =>
     with love.graphics
@@ -125,9 +125,9 @@ make = ->
 
     if key == "return"
       if @mode == "export"
-        game.level\export_map "maps/#{@file_path}.png"
+        level\export_map "maps/#{@file_path}.png"
       if @mode == "importing"
-        game.level\load "maps/#{@file_path}.png"
+        level\load "maps/#{@file_path}.png"
       @mode = nil
 
   bar.textinput = (t) =>

@@ -1,5 +1,5 @@
 local level = {
-  size = 20,
+  size = 24,
   registry = {
     block = {
       0,
@@ -156,9 +156,8 @@ level.add_tile = function(self, x, y, id)
       return false
     end
   end
-  local tile = objects[id].make(x * game.tile_scale, y * game.tile_scale)
-  game:spawn(tile)
-  game.world:add(tile, tile.x, tile.y, tile.w, tile.h)
+  self:spawn(id, x * level.size, y * level.size)
+  print("Spawned: " .. id .. " at (" .. (tostring(x)) .. ", " .. (tostring(y)) .. ")")
   self.map[x][y] = {
     id = id,
     ref = tile
@@ -177,9 +176,9 @@ end
 level.remove_tile_unchecked = function(self, x, y)
   local ref = self.map[x][y].ref
   ref:remove()
-  for i, v in ipairs(game.objects) do
+  for i, v in ipairs(e) do
     if v == ref then
-      table.remove(game.objects, i)
+      e.delete(i)
       break
     end
   end

@@ -31,16 +31,16 @@ make = function(x, y, sx, sy, r)
     return love.graphics.getHeight() / self.sy
   end
   camera.left = function(self)
-    return self.x / self.sx - self:width() / 2
+    return self.x - self:width() / 2
   end
   camera.right = function(self)
-    return self.x / self.sx + self:width() / 2
+    return self.x + self:width() / 2
   end
   camera.top = function(self)
-    return self.y / self.sy - self:height() / 2
+    return self.y - self:height() / 2
   end
   camera.bot = function(self)
-    return self.y / self.sy + self:height() / 2
+    return self.y + self:height() / 2
   end
   return camera
 end
