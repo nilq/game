@@ -185,6 +185,11 @@ level.export_map = function(self, path)
   local width = self.max_x - self.min_x + 1
   local height = self.max_y - self.min_y + 1
   local level_img = love.image.newImageData(width, height)
+  for x = 0, width - 1 do
+    for y = 0, height - 1 do
+      level_img:setPixel(x, y, 1, 1, 1)
+    end
+  end
   for x = 0, self.max_x do
     local _continue_0 = false
     repeat

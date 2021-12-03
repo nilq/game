@@ -148,6 +148,10 @@ level.export_map = (path) =>
 
   level_img = love.image.newImageData width, height
 
+  for x = 0, width - 1
+    for y = 0, height - 1
+      level_img\setPixel x, y, 1, 1, 1
+
   for x = 0, @max_x
     continue unless @map[x]
 
