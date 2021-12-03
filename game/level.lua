@@ -64,7 +64,8 @@ level.spawn = function(self, k, x, y)
       }
     }
     local id = e.block(conf)
-    return world:add(id, x, y, conf.size.w, conf.size.h)
+    world:add(id, x, y, conf.size.w, conf.size.h)
+    return id
   elseif "player" == _exp_0 then
     local conf = {
       position = {
@@ -133,7 +134,8 @@ level.spawn = function(self, k, x, y)
       }
     }
     local id = e.player(conf)
-    return world:add(id, x, y, conf.size.w, conf.size.h)
+    world:add(id, x, y, conf.size.w, conf.size.h)
+    return id
   end
 end
 level.add_tile = function(self, x, y, id)
@@ -156,7 +158,7 @@ level.add_tile = function(self, x, y, id)
       return false
     end
   end
-  self:spawn(id, x * level.size, y * level.size)
+  local tile = self:spawn(id, x * level.size, y * level.size)
   print("Spawned: " .. id .. " at (" .. (tostring(x)) .. ", " .. (tostring(y)) .. ")")
   self.map[x][y] = {
     id = id,
@@ -174,14 +176,9 @@ level.remove_tile = function(self, x, y)
   return level:remove_tile_unchecked(x, y)
 end
 level.remove_tile_unchecked = function(self, x, y)
-  local ref = self.map[x][y].ref
-  ref:remove()
-  for i, v in ipairs(e) do
-    if v == ref then
-      e.delete(i)
-      break
-    end
-  end
+  local i = self.map[x][y].ref
+  e.delete(i)
+  world:remove(i)
   self.map[x][y] = nil
 end
 level.export_map = function(self, path)
@@ -202,7 +199,7 @@ level.export_map = function(self, path)
             _continue_1 = true
             break
           end
-          local color = game.level.registry[self.map[x][y].id]
+          local color = level.registry[self.map[x][y].id]
           local new_x = x - self.min_x
           local new_y = y - self.min_y
           level_img:setPixel(new_x, new_y, color[1], color[2], color[3])
@@ -221,6 +218,7 @@ level.export_map = function(self, path)
   if not (love.filesystem.getInfo("maps")) then
     love.filesystem.createDirectory("maps")
   end
+  print(path)
   return level_img:encode("png", path)
 end
 return level

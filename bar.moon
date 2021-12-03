@@ -81,10 +81,10 @@ make = ->
 
           thing.hover = false
 
-      if @mode == "exporting"
+      if @mode == "export"
         .setColor 0, .25, 0, .9
         .print "[e]xport: #{@file_path}", 10, @grid * 1.85
-      elseif @mode == "importing"
+      elseif @mode == "import"
         .setColor 0, 0, 0, .9
         .print "[i]mport: #{@file_path}", 10, @grid * 1.85
 
@@ -109,10 +109,10 @@ make = ->
     unless @mode
       if key == "e"
         @file_path = ""
-        @mode= "exporting"
+        @mode= "export"
       elseif key == "i"
         @file_path = ""
-        @mode= "importing"
+        @mode= "import"
 
     if key == "escape"
       @mode = nil
@@ -124,10 +124,13 @@ make = ->
         @file_path = string.sub @file_path, 1, byteoffset - 1
 
     if key == "return"
+      print "return!!", @mode
       if @mode == "export"
+        print "hit export"
         level\export_map "maps/#{@file_path}.png"
-      if @mode == "importing"
+      if @mode == "import"
         level\load "maps/#{@file_path}.png"
+
       @mode = nil
 
   bar.textinput = (t) =>

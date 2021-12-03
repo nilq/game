@@ -66,10 +66,10 @@ make = function()
           thing.hover = false
         end
       end
-      if self.mode == "exporting" then
+      if self.mode == "export" then
         _with_0.setColor(0, .25, 0, .9)
         _with_0.print("[e]xport: " .. tostring(self.file_path), 10, self.grid * 1.85)
-      elseif self.mode == "importing" then
+      elseif self.mode == "import" then
         _with_0.setColor(0, 0, 0, .9)
         _with_0.print("[i]mport: " .. tostring(self.file_path), 10, self.grid * 1.85)
       end
@@ -98,10 +98,10 @@ make = function()
     if not (self.mode) then
       if key == "e" then
         self.file_path = ""
-        self.mode = "exporting"
+        self.mode = "export"
       elseif key == "i" then
         self.file_path = ""
-        self.mode = "importing"
+        self.mode = "import"
       end
     end
     if key == "escape" then
@@ -114,10 +114,12 @@ make = function()
       end
     end
     if key == "return" then
+      print("return!!", self.mode)
       if self.mode == "export" then
+        print("hit export")
         level:export_map("maps/" .. tostring(self.file_path) .. ".png")
       end
-      if self.mode == "importing" then
+      if self.mode == "import" then
         level:load("maps/" .. tostring(self.file_path) .. ".png")
       end
       self.mode = nil

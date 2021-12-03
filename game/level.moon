@@ -44,6 +44,8 @@ level.spawn = (k, x, y) =>
       id = e.block conf
       world\add id, x, y, conf.size.w, conf.size.h
 
+      return id
+
     when "player"
       conf =
         position:
@@ -94,6 +96,8 @@ level.spawn = (k, x, y) =>
 
       world\add id, x, y, conf.size.w, conf.size.h
 
+      return id
+
 level.add_tile = (x, y, id) => -- returns false if it's adding the same
     --TODO: Make the min and max be calculated in @export_map
     --      as adding a tile far away and then removing it
@@ -114,7 +118,7 @@ level.add_tile = (x, y, id) => -- returns false if it's adding the same
         return false
 
     --create the tile in the game world
-    @spawn id, x * level.size, y * level.size
+    tile = @spawn id, x * level.size, y * level.size
 
     print "Spawned: " .. id .. " at (" .. (tostring x) .. ", " .. (tostring y) .. ")"
 
@@ -131,16 +135,10 @@ level.remove_tile = (x, y) =>
     level\remove_tile_unchecked x, y
 
 level.remove_tile_unchecked = (x, y) =>
-  ref = @map[x][y].ref
-  --Make the object remove itself from bump
-  ref\remove!
+  i = @map[x][y].ref
 
-  --Remove from game.objects
-  for i, v in ipairs e
-    if v == ref
-      e.delete i
-      break
-
+  e.delete i
+  world\remove i
   --Remove from 2d array
   @map[x][y] = nil
 
@@ -156,7 +154,7 @@ level.export_map = (path) =>
     for y = 0, @max_y
       continue unless @map[x][y]
 
-      color = game.level.registry[@map[x][y].id]
+      color = level.registry[@map[x][y].id]
 
       new_x = x - @min_x
       new_y = y - @min_y
@@ -166,6 +164,7 @@ level.export_map = (path) =>
   unless love.filesystem.getInfo "maps"
     love.filesystem.createDirectory "maps"
 
+  print path
   level_img\encode "png", path
 
 level
