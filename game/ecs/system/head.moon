@@ -1,0 +1,14 @@
+draw = (sprite, size, dir, x, y, s, r) ->
+  with love.graphics
+    ox = s * size.w / sprite\getWidth! * dir[1]
+    oy = s * size.h / sprite\getHeight!
+    .draw sprite, x + size.w / 2, y + size.h / 2, r, ox, oy, sprite\getWidth! / 2, sprite\getHeight! / 2
+
+s.head = { "position", "direction", "size", "head", "shade" }
+s.head.draw = (i, pos, dir, size, head, shade) ->
+  love.graphics.setColor shade
+  draw head.body, size, dir, pos.x, pos.y, 1, head.r
+
+  love.graphics.setColor 1, 1, 1
+
+  draw head.eyes.img, size, dir, head.eyes.x + dir[1] * 2, head.eyes.y, head.s, head.r
