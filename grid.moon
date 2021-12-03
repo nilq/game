@@ -1,6 +1,6 @@
 make = ->
   grid = {
-    tile_scale: 20
+    tile_scale: 24
   }
 
   grid.draw = =>

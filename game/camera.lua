@@ -24,6 +24,24 @@ make = function(x, y, sx, sy, r)
     self.x = self.x + dx
     self.y = self.y + dy
   end
+  camera.width = function(self)
+    return love.graphics.getWidth() / self.sx
+  end
+  camera.height = function(self)
+    return love.graphics.getHeight() / self.sy
+  end
+  camera.left = function(self)
+    return self.x / self.sx - self:width() / 2
+  end
+  camera.right = function(self)
+    return self.x / self.sx + self:width() / 2
+  end
+  camera.top = function(self)
+    return self.y / self.sy - self:height() / 2
+  end
+  camera.bot = function(self)
+    return self.y / self.sy + self:height() / 2
+  end
   return camera
 end
 return make

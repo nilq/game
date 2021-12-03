@@ -64,16 +64,18 @@ love.keypressed = (key) ->
     when "escape"
       love.event.quit!
 
+  state\press key
 
 love.keyreleased = ->
   return
 
 love.textinput = (t) ->
   console.textinput t
+  state\textinput t
 
 love.mousepressed = (x, y, button) ->
   console.mousepressed x, y, button
-
+  state\mousepressed x, y, button
 
 -- weird shit:
 

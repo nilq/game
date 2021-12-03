@@ -77,17 +77,20 @@ love.keypressed = function(key)
   end
   local _exp_0 = key
   if "r" == _exp_0 then
-    return love.load()
+    love.load()
   elseif "escape" == _exp_0 then
-    return love.event.quit()
+    love.event.quit()
   end
+  return state:press(key)
 end
 love.keyreleased = function() end
 love.textinput = function(t)
-  return console.textinput(t)
+  console.textinput(t)
+  return state:textinput(t)
 end
 love.mousepressed = function(x, y, button)
-  return console.mousepressed(x, y, button)
+  console.mousepressed(x, y, button)
+  return state:mousepressed(x, y, button)
 end
 math.fuzzy_eq = function(a, b, eps)
   return a == b or (math.abs(a - b)) < eps
