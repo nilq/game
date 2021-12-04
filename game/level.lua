@@ -190,23 +190,29 @@ level.export_map = function(self, path)
       level_img:setPixel(x, y, 1, 1, 1)
     end
   end
-  for x = 0, self.max_x do
+  local xi = 0
+  local yi = 0
+  for x = self.min_x, self.max_x do
     local _continue_0 = false
     repeat
+      xi = xi + 1
+      yi = 0
       if not (self.map[x]) then
         _continue_0 = true
         break
       end
-      for y = 0, self.max_y do
+      for y = self.min_y, self.max_y do
         local _continue_1 = false
         repeat
+          yi = yi + 1
           if not (self.map[x][y]) then
             _continue_1 = true
             break
           end
           local color = level.registry[self.map[x][y].id]
-          local new_x = x - self.min_x
-          local new_y = y - self.min_y
+          local new_x = xi - 1
+          local new_y = yi - 1
+          print(xi - 1, yi - 1)
           level_img:setPixel(new_x, new_y, color[1], color[2], color[3])
           _continue_1 = true
         until true

@@ -152,18 +152,25 @@ level.export_map = (path) =>
     for y = 0, height - 1
       level_img\setPixel x, y, 1, 1, 1
 
-  for x = 0, @max_x
+  xi = 0
+  yi = 0
+
+  for x = @min_x, @max_x
+    xi += 1
+    yi = 0
     continue unless @map[x]
 
-    for y = 0, @max_y
+    for y = @min_y, @max_y
+      yi += 1
       continue unless @map[x][y]
 
       color = level.registry[@map[x][y].id]
 
-      new_x = x - @min_x
-      new_y = y - @min_y
+      new_x = xi - 1
+      new_y = yi - 1
 
       level_img\setPixel new_x, new_y, color[1], color[2], color[3]
+
 
   unless love.filesystem.getInfo "maps"
     love.filesystem.createDirectory "maps"
