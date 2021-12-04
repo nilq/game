@@ -27,6 +27,7 @@ s.block.draw = function(i, position, size, color, slime)
           y = position.y + size.h - 4
         end
         _with_0.rectangle("fill", x, y, w, h, slime.angle)
+        _with_0.rectangle("fill", x, y, w, h, slime.angle)
       end
     end
     return _with_0

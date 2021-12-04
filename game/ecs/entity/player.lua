@@ -49,29 +49,47 @@ s.player.update = function(i, position, size, physics, player, head, shade, dire
     if other.slime then
       other.slime.visible = true
       local abort = false
+      local blood_color = {
+        (172 + math.random(-15, 15)) / 255,
+        (50 + math.random(-15, 15)) / 255,
+        (50 + math.random(-15, 15)) / 255
+      }
       local _list_0 = other.slime.dir
       for _index_1 = 1, #_list_0 do
         local dir = _list_0[_index_1]
-        if dir == col.normal then
-          dir.color = {
-            225 / 255,
-            32 / 255,
-            32 / 255
-          }
+        if dir.x == col.normal.x and dir.y == col.normal.y then
+          if not (physics.touched_last == dir.color) then
+            dir.color = blood_color
+          end
+          physics.touched_last = dir.color
           abort = true
         end
       end
       if not (abort) then
         local dir = {
-          color = {
-            225 / 255,
-            32 / 255,
-            32 / 255
-          },
+          color = blood_color,
           x = col.normal.x,
           y = col.normal.y
         }
+        sounds.splat:play()
         table.insert(other.slime.dir, dir)
+        physics.touched_last = dir.color
+      end
+    else
+      if other.hurts and not game.death then
+        sounds.ouch:play()
+        head.eyes.img = sprites.player.eyes_dead
+        game.death = true
+        game.death_timer = 1
+        game.s = 2
+        world:update(i, position.x, position.y, size.w / 10, size.h / 10)
+        position.y = position.y + 6
+        physics.dx = 0
+        physics.dy = 0
+        if other.sprite.img == sprites.spikes then
+          other.sprite.img = sprites.bloody
+          head.r = head.r + (math.pi / 10 * math.random(-1, 1))
+        end
       end
     end
     if col.normal.y == -1 then
@@ -89,6 +107,18 @@ s.player.update = function(i, position, size, physics, player, head, shade, dire
     if physics.wall.dir ~= 0 then
       physics.jump.doubled = false
     end
+  end
+  local dist = (math.dist(game.camera, position))
+  local new_cam_x = position.x + physics.dir.x * (math.min(100, math.abs(physics.dx * 10)))
+  local new_cam_y = position.y
+  game.camera.x = math.cerp(game.camera.x, new_cam_x, game.dt * math.min(10, dist * 2))
+  game.camera.y = math.cerp(game.camera.y, new_cam_y, game.dt * math.min(10, dist * 2))
+  dist = math.min(5, (math.dist(position, head.eyes)))
+  head.eyes.x = math.lerp(head.eyes.x, position.x, game.dt * dist * 10)
+  head.eyes.y = math.lerp(head.eyes.y, position.y - 1, game.dt * dist * 10)
+  if game.death then
+    head.s = math.lerp(head.s, 2, game.dt * 4)
+    return 
   end
   if (physics.wall.stick ~= 0 or physics.wall.dir ~= 0) and not grounded then
     physics.dx = physics.wall.dir
@@ -126,31 +156,23 @@ s.player.update = function(i, position, size, physics, player, head, shade, dire
     physics.jump.desire = 0
     physics.wall.dir = 0
     physics.wall.stick = 0
-    if sounds.kick_b:isPlaying() then
-      sounds.kick:play()
-    end
-    if sounds.kick:isPlaying() then
-      sounds.kick_b:play()
-    end
+    sounds.kick:play()
+    sounds.kick_b:play()
+    shack:setShake(0.5)
   end
   local dx, input_y = input:get("move")
   physics.dx = physics.dx + (dx * physics.speed * game.dt)
   if physics.wall.stick ~= 0 and dx ~= physics.wall.dir then
-    physics.wall.stick = 0
+    physics.dx = physics.dx - physics.wall.dir
   end
   if game.god then
     physics.dy = physics.dy + (input_y * physics.speed * game.dt)
   end
-  local dist = (math.dist(game.camera, position))
-  local new_cam_x = position.x + physics.dir.x * (math.min(100, math.abs(physics.dx * 10)))
-  local new_cam_y = position.y
-  game.camera.x = math.cerp(game.camera.x, new_cam_x, game.dt * math.min(10, dist * 2))
-  game.camera.y = math.cerp(game.camera.y, new_cam_y, game.dt * math.min(10, dist * 2))
-  dist = math.min(5, (math.dist(position, head.eyes)))
-  head.eyes.x = math.lerp(head.eyes.x, position.x, game.dt * dist * 10)
-  head.eyes.y = math.lerp(head.eyes.y, position.y - 1, game.dt * dist * 10)
   local frcx = physics.frc_x
   local frcy = physics.frc_y
+  if head.supermario then
+    head.s = head.s + (0.1 * math.cos(game.time * 109))
+  end
   if game.god then
     frcx = physics.god_frc
     frcy = frcx

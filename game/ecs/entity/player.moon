@@ -2,6 +2,7 @@ e.player = { "position", "size", "physics", "player", "head", "shade", "directio
 
 s.player = { "position", "size", "physics", "player", "head", "shade", "direction" }
 s.player.update = (i, position, size, physics, player, head, shade, direction) ->
+
   physics.dir.x = math.sign physics.dx
   physics.dir.x = 0 if math.fuzzy_eq physics.dx, 0, 1.2
 
@@ -33,19 +34,49 @@ s.player.update = (i, position, size, physics, player, head, shade, direction) -
     if other.slime
       other.slime.visible = true
       abort = false
-      for dir in *other.slime.dir
-        if dir == col.normal
-          dir.color = { 225 / 255, 32 / 255, 32 / 255 }
 
+      blood_color = {
+        (172 + math.random -15, 15) / 255,
+        (50 + math.random -15, 15)  / 255,
+        (50 + math.random -15, 15)  / 255,
+      }
+
+      for dir in *other.slime.dir
+        if dir.x == col.normal.x and dir.y == col.normal.y
+          unless physics.touched_last == dir.color
+            dir.color = blood_color
+
+          physics.touched_last = dir.color
           abort = true
 
       unless abort
         dir =
-          color: { 225 / 255, 32 / 255, 32 / 255 }
+          color: blood_color
           x: col.normal.x
           y: col.normal.y
 
+        sounds.splat\play!
+
         table.insert other.slime.dir, dir
+        physics.touched_last = dir.color
+
+    else if other.hurts and not game.death
+      sounds.ouch\play!
+      head.eyes.img = sprites.player.eyes_dead
+
+      game.death = true
+      game.death_timer = 1
+      game.s = 2
+
+      world\update i, position.x, position.y, size.w / 10, size.h / 10
+      position.y += 6
+
+      physics.dx = 0
+      physics.dy = 0
+
+      if other.sprite.img == sprites.spikes
+        other.sprite.img = sprites.bloody
+        head.r += math.pi / 10 * math.random -1, 1
 
     if col.normal.y == -1
       sounds.landing\play! unless physics.coyote > 1
@@ -59,6 +90,25 @@ s.player.update = (i, position, size, physics, player, head, shade, direction) -
 
     if physics.wall.dir != 0
       physics.jump.doubled = false
+
+  dist = (math.dist game.camera, position)
+  new_cam_x = position.x + physics.dir.x * (math.min 100, math.abs physics.dx * 10)
+  new_cam_y = position.y
+
+  game.camera.x = math.cerp game.camera.x, new_cam_x, game.dt * math.min 10, dist * 2
+  game.camera.y = math.cerp game.camera.y, new_cam_y, game.dt * math.min 10, dist * 2
+
+  dist = math.min 5, (math.dist position, head.eyes)
+
+  head.eyes.x = math.lerp head.eyes.x, position.x, game.dt * dist * 10
+  head.eyes.y = math.lerp head.eyes.y, position.y - 1, game.dt * dist * 10
+
+  -- all of the funny stuff starts here
+  -- ... unless death of course
+  if game.death
+    head.s = math.lerp head.s, 2, game.dt * 4
+
+    return
 
   if (physics.wall.stick != 0 or physics.wall.dir != 0) and not grounded
     physics.dx = physics.wall.dir
@@ -107,32 +157,25 @@ s.player.update = (i, position, size, physics, player, head, shade, direction) -
     physics.wall.dir = 0
     physics.wall.stick = 0
 
-    sounds.kick\play!   if sounds.kick_b\isPlaying!
-    sounds.kick_b\play! if sounds.kick\isPlaying!
+    sounds.kick\play!
+    sounds.kick_b\play!
+
+    shack\setShake 0.5
 
   dx, input_y = input\get "move"
   physics.dx += dx * physics.speed * game.dt
 
   if physics.wall.stick != 0 and dx != physics.wall.dir
-    physics.wall.stick = 0
+    physics.dx -= physics.wall.dir
 
   if game.god
     physics.dy += input_y * physics.speed * game.dt
 
-  dist = (math.dist game.camera, position)
-  new_cam_x = position.x + physics.dir.x * (math.min 100, math.abs physics.dx * 10)
-  new_cam_y = position.y
-
-  game.camera.x = math.cerp game.camera.x, new_cam_x, game.dt * math.min 10, dist * 2
-  game.camera.y = math.cerp game.camera.y, new_cam_y, game.dt * math.min 10, dist * 2
-
-  dist = math.min 5, (math.dist position, head.eyes)
-
-  head.eyes.x = math.lerp head.eyes.x, position.x, game.dt * dist * 10
-  head.eyes.y = math.lerp head.eyes.y, position.y - 1, game.dt * dist * 10
-
   frcx = physics.frc_x
   frcy = physics.frc_y
+
+  if head.supermario
+    head.s += 0.1 * math.cos game.time * 109
 
   if game.god
     frcx = physics.god_frc

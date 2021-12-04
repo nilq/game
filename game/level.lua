@@ -8,7 +8,12 @@ local level = {
     },
     player = {
       1,
+      243 / 255,
+      0
+    },
+    spike = {
       1,
+      0,
       0
     }
   },
@@ -41,6 +46,9 @@ level.load = function(self, path)
   end
 end
 level.spawn = function(self, k, x, y)
+  if k == "player" then
+    print(k)
+  end
   local _exp_0 = k
   if "block" == _exp_0 then
     local conf = {
@@ -68,6 +76,24 @@ level.spawn = function(self, k, x, y)
       }
     }
     local id = e.block(conf)
+    world:add(id, x, y, conf.size.w, conf.size.h)
+    return id
+  elseif "spike" == _exp_0 then
+    local conf = {
+      position = {
+        x = x,
+        y = y
+      },
+      size = {
+        w = 24,
+        h = 24
+      },
+      sprite = {
+        img = sprites.spikes
+      },
+      hurts = { }
+    }
+    local id = e.spike(conf)
     world:add(id, x, y, conf.size.w, conf.size.h)
     return id
   elseif "player" == _exp_0 then

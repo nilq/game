@@ -22,3 +22,4 @@ s.block.draw = (i, position, size, color, slime) ->
           y = position.y + size.h - 4
 
         .rectangle "fill", x, y, w, h, slime.angle
+        .rectangle "fill", x, y, w, h, slime.angle

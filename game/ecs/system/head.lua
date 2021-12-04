@@ -16,7 +16,11 @@ s.head = {
   "shade"
 }
 s.head.draw = function(i, pos, dir, size, head, shade)
-  love.graphics.setColor(shade)
+  love.graphics.setColor({
+    238 / 255,
+    195 / 255,
+    154 / 255
+  })
   draw(head.body, size, dir, pos.x, pos.y, 1, head.r)
   love.graphics.setColor(1, 1, 1)
   return draw(head.eyes.img, size, dir, head.eyes.x + dir[1] * 2, head.eyes.y, head.s, head.r)

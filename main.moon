@@ -4,16 +4,21 @@ require "libs/autobatch"
 
 export e, c, s = unpack (require "libs/ecs")
 
+e.nothing = {} -- for purging entities!!
+
 require "game/ecs/components"
 require "game/ecs/entity/player"
 require "game/ecs/entity/block"
+require "game/ecs/entity/spike"
 
 require "game/ecs/system/block"
 require "game/ecs/system/head"
+require "game/ecs/system/sprite"
 
 baton   = require "libs/baton"
 console = require "libs/console"
-bump    = require "libs/bump"
+
+export bump = require "libs/bump"
 
 state = require "game"
 
@@ -54,11 +59,6 @@ love.draw = ->
   with love.graphics
     .setColor 0, 0, 0
     .print "FPS " .. love.timer.getFPS!, 10, 10
-
-    .setColor 0, 0.8, 0
-    .print "<arrow keys to move>", 10, 35
-    .print "<shift to dash>", 10, 50
-    .print "<wall jump pls>", 10, 65
 
   state\draw!
   console.draw!

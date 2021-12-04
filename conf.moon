@@ -34,12 +34,12 @@ love.run = ->
 love.conf = (t) ->
   t.window.width  = 900
   t.window.height = 600
-  t.window.title = "niels' pirate game"
-  t.window.fullscreen = true
+  t.window.title = "VIKING DASH"
+  t.window.fullscreen = not true
 
   t.releases =
-    title: "pirate game"
-    package: "pirate-game"
+    title: "VIKING DASH"
+    package: "viking-dash"
     version: "1.0.0"
     author: "nilq"
     description: "play the game please"

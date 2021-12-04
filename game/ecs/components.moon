@@ -42,3 +42,7 @@ c.slime =
   dir: {}
   visible: false
   color: { 1, 1, 1 }
+
+c.hurts = {}
+c.sprite =
+  img: nil

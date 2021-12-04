@@ -61,3 +61,7 @@ c.slime = {
     1
   }
 }
+c.hurts = { }
+c.sprite = {
+  img = nil
+}

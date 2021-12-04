@@ -1,14 +1,17 @@
 jit.opt.start(3, '-loop', 'maxtrace=5000', 'hotloop=100')
 require("libs/autobatch")
 e, c, s = unpack((require("libs/ecs")))
+e.nothing = { }
 require("game/ecs/components")
 require("game/ecs/entity/player")
 require("game/ecs/entity/block")
+require("game/ecs/entity/spike")
 require("game/ecs/system/block")
 require("game/ecs/system/head")
+require("game/ecs/system/sprite")
 local baton = require("libs/baton")
 local console = require("libs/console")
-local bump = require("libs/bump")
+bump = require("libs/bump")
 local state = require("game")
 input = baton.new({
   controls = {
@@ -72,10 +75,6 @@ love.draw = function()
     local _with_0 = love.graphics
     _with_0.setColor(0, 0, 0)
     _with_0.print("FPS " .. love.timer.getFPS(), 10, 10)
-    _with_0.setColor(0, 0.8, 0)
-    _with_0.print("<arrow keys to move>", 10, 35)
-    _with_0.print("<shift to dash>", 10, 50)
-    _with_0.print("<wall jump pls>", 10, 65)
   end
   state:draw()
   return console.draw()

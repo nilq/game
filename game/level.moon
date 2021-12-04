@@ -2,7 +2,8 @@ level =
   size: 24
   registry:
     block:  {0, 0, 0}
-    player: {1, 1, 0}
+    player: {1, 243 / 255, 0}
+    spike: {1, 0, 0}
 
   map: {}
 
@@ -31,6 +32,7 @@ level.load = (path) =>
             @spawn k, @size * x, @size * y
 
 level.spawn = (k, x, y) =>
+  print k if k == "player"
   switch k
     when "block"
       conf =
@@ -46,6 +48,22 @@ level.spawn = (k, x, y) =>
           color: { 1, 1, 1 }
 
       id = e.block conf
+      world\add id, x, y, conf.size.w, conf.size.h
+
+      return id
+
+    when "spike"
+      conf =
+        position:
+          :x, :y
+        size:
+          w: 24
+          h: 24
+        sprite:
+          img: sprites.spikes
+        hurts: {}
+
+      id = e.spike conf
       world\add id, x, y, conf.size.w, conf.size.h
 
       return id
