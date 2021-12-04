@@ -8,11 +8,26 @@ export shack = require "libs/shack"
 
 require "game/sprites"
 
+with love.audio
+  export sounds = {
+    hop:     .newSource "res/sound/hop.wav", "static"
+    landing: .newSource "res/sound/landing.wav", "static"
+    steps:   .newSource "res/sound/stepz.wav", "static"
+    dash:    .newSource "res/sound/dash.wav", "static"
+    kick:    .newSource "res/sound/kick.wav", "static"
+    kick_b:  .newSource "res/sound/kick.wav", "static"
+    music:   .newSource "res/music/viking_music.mp3", "stream"
+  }
+
+sounds.music\setLooping true
+sounds.music\setVolume 0.7
+
 export game = {
   dt: 0
   time: 0 -- incrementing forever!!!
   tile_scale: 24
   editor: false
+  god: false
 }
 
 love.graphics.setBackgroundColor 0.8, 0.8, 0.8
@@ -31,6 +46,8 @@ game.load = =>
     sprite: sprites.player.body
     name: "block"
 
+  sounds.music\play!
+
 game.update = (dt) =>
   @dt = dt
   @time += dt
@@ -40,6 +57,14 @@ game.update = (dt) =>
   s(s.player)
 
   shack\update dt
+
+  if @editor
+    @camera.sx = math.cerp @camera.sx, 1.2, dt * 10
+    @camera.sy = math.cerp @camera.sy, 1.2, dt * 10
+  else
+    @camera.sx = math.cerp @camera.sx, 2.5, dt * 10
+    @camera.sy = math.cerp @camera.sy, 2.5, dt * 10
+
 
 game.draw = =>
   @camera\set!

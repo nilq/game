@@ -12,6 +12,10 @@ level =
   max_x: nil
   max_y: nil
 
+  player_coords:
+    x: 0
+    y: 0
+
 level.load = (path) =>
   image = love.image.newImageData(path)
   map   = {}
@@ -47,6 +51,9 @@ level.spawn = (k, x, y) =>
       return id
 
     when "player"
+      @player_coords =
+        :x, :y
+
       conf =
         position:
           :x, :y
@@ -58,6 +65,9 @@ level.spawn = (k, x, y) =>
           dy: 0
           frc_x: 10
           frc_y: 2
+
+          god_frc: 15
+
           dir:
             x: 0
             y: 0
@@ -171,6 +181,7 @@ level.export_map = (path) =>
 
       level_img\setPixel new_x, new_y, color[1], color[2], color[3]
 
+  level_img\setPixel @player_coords.x, @player_coords.y, level.registry["player"]
 
   unless love.filesystem.getInfo "maps"
     love.filesystem.createDirectory "maps"

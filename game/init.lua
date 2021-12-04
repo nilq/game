@@ -4,11 +4,26 @@ local grid = require("grid")
 local bar = require("bar")
 shack = require("libs/shack")
 require("game/sprites")
+do
+  local _with_0 = love.audio
+  sounds = {
+    hop = _with_0.newSource("res/sound/hop.wav", "static"),
+    landing = _with_0.newSource("res/sound/landing.wav", "static"),
+    steps = _with_0.newSource("res/sound/stepz.wav", "static"),
+    dash = _with_0.newSource("res/sound/dash.wav", "static"),
+    kick = _with_0.newSource("res/sound/kick.wav", "static"),
+    kick_b = _with_0.newSource("res/sound/kick.wav", "static"),
+    music = _with_0.newSource("res/music/viking_music.mp3", "stream")
+  }
+end
+sounds.music:setLooping(true)
+sounds.music:setVolume(0.7)
 game = {
   dt = 0,
   time = 0,
   tile_scale = 24,
-  editor = false
+  editor = false,
+  god = false
 }
 love.graphics.setBackgroundColor(0.8, 0.8, 0.8)
 game.load = function(self)
@@ -19,10 +34,11 @@ game.load = function(self)
   self.camera = camera(0, 0, 2.5, 2.5, 0)
   self.grid = grid.make()
   self.bar = bar.make()
-  return self.bar:add({
+  self.bar:add({
     sprite = sprites.player.body,
     name = "block"
   })
+  return sounds.music:play()
 end
 game.update = function(self, dt)
   self.dt = dt
@@ -31,7 +47,14 @@ game.update = function(self, dt)
     self.bar:update(dt)
   end
   s(s.player)
-  return shack:update(dt)
+  shack:update(dt)
+  if self.editor then
+    self.camera.sx = math.cerp(self.camera.sx, 1.2, dt * 10)
+    self.camera.sy = math.cerp(self.camera.sy, 1.2, dt * 10)
+  else
+    self.camera.sx = math.cerp(self.camera.sx, 2.5, dt * 10)
+    self.camera.sy = math.cerp(self.camera.sy, 2.5, dt * 10)
+  end
 end
 game.draw = function(self)
   self.camera:set()

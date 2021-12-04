@@ -52,9 +52,14 @@ love.load = function()
   world = bump.newWorld()
   console.load()
   state:load()
-  return console.defineCommand("editor", "Toggle level-editor.", function()
-    console.i("Level editor: " .. tostring(state.editor))
+  console.defineCommand("editor", "Toggle level-editor.", function()
+    console.i("Level editor: " .. tostring(not state.editor))
     state.editor = not state.editor
+    state.god = state.editor
+  end)
+  return console.defineCommand("god", "Toggle god-mode.", function()
+    console.i("God mode!!!: " .. tostring(not state.god))
+    state.god = not state.god
   end)
 end
 love.update = function(dt)

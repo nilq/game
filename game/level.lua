@@ -16,7 +16,11 @@ local level = {
   min_x = nil,
   min_y = nil,
   max_x = nil,
-  max_y = nil
+  max_y = nil,
+  player_coords = {
+    x = 0,
+    y = 0
+  }
 }
 level.load = function(self, path)
   local image = love.image.newImageData(path)
@@ -67,6 +71,10 @@ level.spawn = function(self, k, x, y)
     world:add(id, x, y, conf.size.w, conf.size.h)
     return id
   elseif "player" == _exp_0 then
+    self.player_coords = {
+      x = x,
+      y = y
+    }
     local conf = {
       position = {
         x = x,
@@ -84,6 +92,7 @@ level.spawn = function(self, k, x, y)
         dy = 0,
         frc_x = 10,
         frc_y = 2,
+        god_frc = 15,
         dir = {
           x = 0,
           y = 0
@@ -212,7 +221,6 @@ level.export_map = function(self, path)
           local color = level.registry[self.map[x][y].id]
           local new_x = xi - 1
           local new_y = yi - 1
-          print(xi - 1, yi - 1)
           level_img:setPixel(new_x, new_y, color[1], color[2], color[3])
           _continue_1 = true
         until true
@@ -226,6 +234,7 @@ level.export_map = function(self, path)
       break
     end
   end
+  level_img:setPixel(self.player_coords.x, self.player_coords.y, level.registry["player"])
   if not (love.filesystem.getInfo("maps")) then
     love.filesystem.createDirectory("maps")
   end

@@ -37,8 +37,13 @@ love.load = ->
   state\load!
 
   console.defineCommand "editor", "Toggle level-editor.", ->
-    console.i "Level editor: " .. tostring state.editor
+    console.i "Level editor: " .. tostring not state.editor
     state.editor = not state.editor
+    state.god = state.editor
+
+  console.defineCommand "god", "Toggle god-mode.", ->
+    console.i "God mode!!!: " .. tostring not state.god
+    state.god = not state.god
 
 love.update = (dt) ->
   console.update dt
