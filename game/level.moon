@@ -4,6 +4,9 @@ level =
     block:  {0, 0, 0}
     player: {1, 243 / 255, 0}
     spike: {1, 0, 0}
+    spike_left: {172 / 255, 50 / 255, 50 / 255}
+    spike_right: {217 / 255, 87 / 255, 99 / 255}
+
     house: {0, 0, 1}
     dont: {102 / 255, 57 / 255, 49 / 255}
     dirt: { 138 / 255, 111 / 255, 48 / 255 }
@@ -119,7 +122,7 @@ level.spawn = (k, x, y) =>
             h: spr\getHeight! * 1.5
           sprite:
             img: spr
-          speed: {1}
+          speed: {3}
 
         id = e.cloud conf
 
@@ -170,12 +173,54 @@ level.spawn = (k, x, y) =>
           h: 24
         sprite:
           img: sprites.spikes
-        hurts: {}
+        hurts:
+          gen: GEN
 
       id = e.spike conf
       world\add id, x, y, conf.size.w, conf.size.h
 
       return id
+
+    when "spike_left"
+      conf =
+        position:
+          :x, :y
+        size:
+          w: 24
+          h: 24
+        sprite:
+          img: sprites.spikes
+          r: 0
+        hurts:
+          gen: GEN
+
+
+      conf.sprite.r = -math.pi / 2
+      id = e.spike conf
+      world\add id, x, y, conf.size.w, conf.size.h
+
+      return id
+
+    when "spike_right"
+      conf =
+        position:
+          :x, :y
+        size:
+          w: 24
+          h: 24
+        sprite:
+          img: sprites.spikes
+          r: 0
+        hurts:
+          gen: GEN
+
+
+      conf.sprite.r = math.pi / 2
+      id = e.spike conf
+      world\add id, x, y, conf.size.w, conf.size.h
+
+      return id
+
 
     when "player"
       @player_coords =

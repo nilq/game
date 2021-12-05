@@ -88,7 +88,8 @@ s.player.update = function(i, position, size, physics, player, head, shade, dire
         physics.wall.stick = 4
       end
     end
-    if other.hurts and not game.death then
+    if other.hurts and other.hurts.gen == GEN and not game.death then
+      sounds.crunch:play()
       sounds.ouch:play()
       head.eyes.img = sprites.player.eyes_dead
       game.death = true
@@ -101,6 +102,9 @@ s.player.update = function(i, position, size, physics, player, head, shade, dire
       if other.sprite.img == sprites.spikes then
         other.sprite.img = sprites.bloody
         head.r = head.r + (math.pi / 10 * math.random(-1, 1))
+      end
+      if other.sprite.r then
+        physics.gravity.power = 0
       end
     end
     if col.normal.y == -1 then

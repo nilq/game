@@ -15,11 +15,13 @@ do
     kick_b = _with_0.newSource("res/sound/kick.wav", "static"),
     splat = _with_0.newSource("res/sound/splat.wav", "static"),
     music = _with_0.newSource("res/music/viking_music.mp3", "stream"),
-    ouch = _with_0.newSource("res/sound/ouch.wav", "static")
+    ouch = _with_0.newSource("res/sound/ouch.wav", "static"),
+    crunch = _with_0.newSource("res/sound/crunch.wav", "static")
   }
 end
 sounds.music:setLooping(true)
 sounds.music:setVolume(0.4)
+GEN = 0
 game = {
   dt = 0,
   time = 0,
@@ -31,8 +33,16 @@ game = {
 }
 love.graphics.setBackgroundColor(255 / 255, 157 / 255, 90 / 255)
 game.load = function(self)
+  GEN = GEN + 1
   print("new e?", #e)
   if #e then
+    local b = #e * 3
+    for i = 1, #e do
+      e.delete(i)
+    end
+    for i = 1, 10000 do
+      e.nothing({ })
+    end
     for i = 1, #e do
       e.delete(i)
     end

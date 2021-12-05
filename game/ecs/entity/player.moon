@@ -70,7 +70,8 @@ s.player.update = (i, position, size, physics, player, head, shade, direction) -
       physics.wall.dir = -col.normal.x
       physics.wall.stick = 4 if physics.wall.dir != 0
 
-    if other.hurts and not game.death
+    if other.hurts and other.hurts.gen == GEN and not game.death
+      sounds.crunch\play!
       sounds.ouch\play!
       head.eyes.img = sprites.player.eyes_dead
 
@@ -87,6 +88,9 @@ s.player.update = (i, position, size, physics, player, head, shade, direction) -
       if other.sprite.img == sprites.spikes
         other.sprite.img = sprites.bloody
         head.r += math.pi / 10 * math.random -1, 1
+
+      if other.sprite.r
+        physics.gravity.power = 0
 
     if col.normal.y == -1
       sounds.landing\play! unless physics.coyote > 1

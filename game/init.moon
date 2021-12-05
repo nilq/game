@@ -19,10 +19,13 @@ with love.audio
     splat:   .newSource "res/sound/splat.wav", "static"
     music:   .newSource "res/music/viking_music.mp3", "stream"
     ouch:    .newSource "res/sound/ouch.wav", "static"
+    crunch:  .newSource "res/sound/crunch.wav", "static"
   }
 
 sounds.music\setLooping true
 sounds.music\setVolume 0.4
+
+export GEN = 0
 
 export game = {
   dt: 0
@@ -37,9 +40,18 @@ export game = {
 love.graphics.setBackgroundColor 255 / 255, 157 / 255, 90 / 255
 
 game.load = =>
+  GEN += 1
   print "new e?", #e
 
   if #e
+    b = #e * 3
+
+    for i = 1, #e
+      e.delete i
+
+    for i = 1, 10000
+      e.nothing {}
+
     for i = 1, #e
       e.delete i
 

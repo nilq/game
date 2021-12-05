@@ -16,6 +16,16 @@ local level = {
       0,
       0
     },
+    spike_left = {
+      172 / 255,
+      50 / 255,
+      50 / 255
+    },
+    spike_right = {
+      217 / 255,
+      87 / 255,
+      99 / 255
+    },
     house = {
       0,
       0,
@@ -161,7 +171,7 @@ level.spawn = function(self, k, x, y)
           img = spr
         },
         speed = {
-          1
+          3
         }
       }
       local id = e.cloud(conf)
@@ -216,8 +226,54 @@ level.spawn = function(self, k, x, y)
       sprite = {
         img = sprites.spikes
       },
-      hurts = { }
+      hurts = {
+        gen = GEN
+      }
     }
+    local id = e.spike(conf)
+    world:add(id, x, y, conf.size.w, conf.size.h)
+    return id
+  elseif "spike_left" == _exp_0 then
+    local conf = {
+      position = {
+        x = x,
+        y = y
+      },
+      size = {
+        w = 24,
+        h = 24
+      },
+      sprite = {
+        img = sprites.spikes,
+        r = 0
+      },
+      hurts = {
+        gen = GEN
+      }
+    }
+    conf.sprite.r = -math.pi / 2
+    local id = e.spike(conf)
+    world:add(id, x, y, conf.size.w, conf.size.h)
+    return id
+  elseif "spike_right" == _exp_0 then
+    local conf = {
+      position = {
+        x = x,
+        y = y
+      },
+      size = {
+        w = 24,
+        h = 24
+      },
+      sprite = {
+        img = sprites.spikes,
+        r = 0
+      },
+      hurts = {
+        gen = GEN
+      }
+    }
+    conf.sprite.r = math.pi / 2
     local id = e.spike(conf)
     world:add(id, x, y, conf.size.w, conf.size.h)
     return id
