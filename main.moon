@@ -12,6 +12,7 @@ require "game/ecs/entity/block"
 require "game/ecs/entity/spike"
 require "game/ecs/entity/house"
 require "game/ecs/entity/cloud"
+require "game/ecs/entity/door"
 
 require "game/ecs/system/block"
 require "game/ecs/system/head"

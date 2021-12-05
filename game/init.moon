@@ -20,12 +20,14 @@ with love.audio
     music:   .newSource "res/music/viking_music.mp3", "stream"
     ouch:    .newSource "res/sound/ouch.wav", "static"
     crunch:  .newSource "res/sound/crunch.wav", "static"
+    door:    .newSource "res/sound/door.wav", "static"
   }
 
 sounds.music\setLooping true
 sounds.music\setVolume 0.4
 
 export GEN = 0
+export LEVEL = 0
 
 export game = {
   dt: 0
@@ -35,6 +37,8 @@ export game = {
   god: false
   death: false
   death_timer: 0
+  level: 0
+  level_timer: 0
 }
 
 love.graphics.setBackgroundColor 255 / 255, 157 / 255, 90 / 255
@@ -57,7 +61,7 @@ game.load = =>
 
     print "after:", #e
 
-  level\load "levels/test.png"
+  level\load "levels/#{LEVEL}.png"
 
   @camera = camera 0, 0, 2.5, 2.5, 0
   @grid   = grid.make!
@@ -81,8 +85,14 @@ game.update = (dt) =>
   @time += dt
 
   @death_timer = math.max 0, @death_timer - dt
+  @level_timer = math.max 0, @level_timer - dt
 
   if @death and @death_timer == 0
+    @restart_level!
+
+  if @next_level and @level_timer == 0
+    @next_level = false
+    LEVEL += 1
     @restart_level!
 
   @bar\update dt if @editor
@@ -119,6 +129,11 @@ game.draw = =>
   if @death
     with love.graphics
       .setColor 173 / 255, 50 / 255, 50 / 255, 1 - @death_timer
+      .rectangle "fill", 0, 0, .getWidth!, .getHeight!
+
+  if @level_timer > 0
+    with love.graphics
+      .setColor 0.2, 0.2, 0.2, 1 - @level_timer
       .rectangle "fill", 0, 0, .getWidth!, .getHeight!
 
 game.press = (key) =>

@@ -19,6 +19,7 @@ sprites = {
   grass_full = img("things/grass_full"),
   bush = img("things/bush"),
   snow = img("things/snow"),
+  door = img("things/doort"),
   clouds = {
     img("cloud1"),
     img("cloud2"),

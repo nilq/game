@@ -68,3 +68,4 @@ c.sprite = {
 c.speed = {
   0
 }
+c.door = { }

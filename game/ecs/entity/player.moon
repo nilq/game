@@ -92,6 +92,11 @@ s.player.update = (i, position, size, physics, player, head, shade, direction) -
       if other.sprite.r
         physics.gravity.power = 0
 
+    if other.door and other.door.gen == GEN and not game.next_level
+      sounds.door\play!
+      game.level_timer = 1
+      game.next_level = true
+
     if col.normal.y == -1
       sounds.landing\play! unless physics.coyote > 1
 

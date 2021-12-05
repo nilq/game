@@ -16,12 +16,14 @@ do
     splat = _with_0.newSource("res/sound/splat.wav", "static"),
     music = _with_0.newSource("res/music/viking_music.mp3", "stream"),
     ouch = _with_0.newSource("res/sound/ouch.wav", "static"),
-    crunch = _with_0.newSource("res/sound/crunch.wav", "static")
+    crunch = _with_0.newSource("res/sound/crunch.wav", "static"),
+    door = _with_0.newSource("res/sound/door.wav", "static")
   }
 end
 sounds.music:setLooping(true)
 sounds.music:setVolume(0.4)
 GEN = 0
+LEVEL = 0
 game = {
   dt = 0,
   time = 0,
@@ -29,7 +31,9 @@ game = {
   editor = false,
   god = false,
   death = false,
-  death_timer = 0
+  death_timer = 0,
+  level = 0,
+  level_timer = 0
 }
 love.graphics.setBackgroundColor(255 / 255, 157 / 255, 90 / 255)
 game.load = function(self)
@@ -48,7 +52,7 @@ game.load = function(self)
     end
     print("after:", #e)
   end
-  level:load("levels/test.png")
+  level:load("levels/" .. tostring(LEVEL) .. ".png")
   self.camera = camera(0, 0, 2.5, 2.5, 0)
   self.grid = grid.make()
   self.bar = bar.make()
@@ -68,7 +72,13 @@ game.update = function(self, dt)
   self.dt = dt
   self.time = self.time + dt
   self.death_timer = math.max(0, self.death_timer - dt)
+  self.level_timer = math.max(0, self.level_timer - dt)
   if self.death and self.death_timer == 0 then
+    self:restart_level()
+  end
+  if self.next_level and self.level_timer == 0 then
+    self.next_level = false
+    LEVEL = LEVEL + 1
     self:restart_level()
   end
   if self.editor then
@@ -107,6 +117,13 @@ game.draw = function(self)
     do
       local _with_0 = love.graphics
       _with_0.setColor(173 / 255, 50 / 255, 50 / 255, 1 - self.death_timer)
+      _with_0.rectangle("fill", 0, 0, _with_0.getWidth(), _with_0.getHeight())
+    end
+  end
+  if self.level_timer > 0 then
+    do
+      local _with_0 = love.graphics
+      _with_0.setColor(0.2, 0.2, 0.2, 1 - self.level_timer)
       _with_0.rectangle("fill", 0, 0, _with_0.getWidth(), _with_0.getHeight())
       return _with_0
     end

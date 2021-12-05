@@ -19,6 +19,8 @@ level =
     snow: { 91 / 255, 110 / 255, 225 / 255 }
     bush: { 215 / 255, 123 / 255, 186 / 255 }
 
+    door: {0, 1, 0}
+
   map: {}
 
   min_x: nil
@@ -68,6 +70,24 @@ level.spawn = (k, x, y) =>
       conf = grass_conf
       id = e.block conf
       world\add id, x, y, conf.size.w, conf.size.h
+
+      return id
+
+    when "door"
+      bruh =
+        position:
+          :x
+          y: y - 8 * 1.5
+        size:
+          w: sprites.door\getWidth! * 1.5
+          h: sprites.door\getHeight! * 1.5
+        sprite:
+          img: sprites.door
+        door:
+          gen: GEN
+
+      id = e.door bruh
+      world\add id, bruh.position.x, bruh.position.y, bruh.size.w, bruh.size.h
 
       return id
 

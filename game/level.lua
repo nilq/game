@@ -65,6 +65,11 @@ local level = {
       215 / 255,
       123 / 255,
       186 / 255
+    },
+    door = {
+      0,
+      1,
+      0
     }
   },
   map = { },
@@ -126,6 +131,26 @@ level.spawn = function(self, k, x, y)
     local conf = grass_conf
     local id = e.block(conf)
     world:add(id, x, y, conf.size.w, conf.size.h)
+    return id
+  elseif "door" == _exp_0 then
+    local bruh = {
+      position = {
+        x = x,
+        y = y - 8 * 1.5
+      },
+      size = {
+        w = sprites.door:getWidth() * 1.5,
+        h = sprites.door:getHeight() * 1.5
+      },
+      sprite = {
+        img = sprites.door
+      },
+      door = {
+        gen = GEN
+      }
+    }
+    local id = e.door(bruh)
+    world:add(id, bruh.position.x, bruh.position.y, bruh.size.w, bruh.size.h)
     return id
   elseif "block" == _exp_0 then
     local conf = grass_conf

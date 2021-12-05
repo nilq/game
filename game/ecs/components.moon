@@ -48,3 +48,4 @@ c.sprite =
   img: nil
 
 c.speed = {0}
+c.door = {}
