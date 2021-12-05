@@ -21,6 +21,9 @@ s.player.update = (i, position, size, physics, player, head, shade, direction) -
     physics.wall.dir = 0
     physics.gravity.mod = 1
 
+  unless world.rects[i]
+    return
+
   position.x, position.y, cols = world\move i, position.x + physics.dx, position.y + physics.dy
 
   physics.dy += physics.gravity.power * physics.gravity.mod * game.dt unless game.god
@@ -45,6 +48,9 @@ s.player.update = (i, position, size, physics, player, head, shade, direction) -
         if dir.x == col.normal.x and dir.y == col.normal.y
           unless physics.touched_last == dir.color
             dir.color = blood_color
+            dir.s = 5
+            if dir.extra_h
+              dir.extra_h = dir.s
 
           physics.touched_last = dir.color
           abort = true
@@ -54,13 +60,17 @@ s.player.update = (i, position, size, physics, player, head, shade, direction) -
           color: blood_color
           x: col.normal.x
           y: col.normal.y
+          s: 5
 
         sounds.splat\play!
 
         table.insert other.slime.dir, dir
         physics.touched_last = dir.color
 
-    else if other.hurts and not game.death
+      physics.wall.dir = -col.normal.x
+      physics.wall.stick = 4 if physics.wall.dir != 0
+
+    if other.hurts and not game.death
       sounds.ouch\play!
       head.eyes.img = sprites.player.eyes_dead
 
@@ -85,15 +95,12 @@ s.player.update = (i, position, size, physics, player, head, shade, direction) -
       physics.jump.doubled = false
       physics.coyote = 5
 
-    physics.wall.dir = -col.normal.x
-    physics.wall.stick = 4 if physics.wall.dir != 0
-
     if physics.wall.dir != 0
       physics.jump.doubled = false
 
   dist = (math.dist game.camera, position)
   new_cam_x = position.x + physics.dir.x * (math.min 100, math.abs physics.dx * 10)
-  new_cam_y = position.y
+  new_cam_y = position.y - 80 + physics.dy * 2
 
   game.camera.x = math.cerp game.camera.x, new_cam_x, game.dt * math.min 10, dist * 2
   game.camera.y = math.cerp game.camera.y, new_cam_y, game.dt * math.min 10, dist * 2
@@ -102,6 +109,19 @@ s.player.update = (i, position, size, physics, player, head, shade, direction) -
 
   head.eyes.x = math.lerp head.eyes.x, position.x, game.dt * dist * 10
   head.eyes.y = math.lerp head.eyes.y, position.y - 1, game.dt * dist * 10
+
+  dist = math.min 5, (math.dist position, head.eyes)
+
+  physics.smooth_dir = math.lerp physics.smooth_dir, physics.dir.x, game.dt * 30
+  head.helmet.x = position.x + physics.smooth_dir * 3
+
+  py = position.y - size.h / 2 - 6 * 1.5
+  target_y = math.lerp head.helmet.y, py, game.dt * dist * 10
+  target_y = py if target_y > py
+
+  head.helmet.r = math.lerp head.helmet.r, head.r, game.dt * 40
+
+  head.helmet.y = target_y
 
   -- all of the funny stuff starts here
   -- ... unless death of course

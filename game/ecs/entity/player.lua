@@ -32,6 +32,9 @@ s.player.update = function(i, position, size, physics, player, head, shade, dire
     physics.wall.dir = 0
     physics.gravity.mod = 1
   end
+  if not (world.rects[i]) then
+    return 
+  end
   local cols
   position.x, position.y, cols = world:move(i, position.x + physics.dx, position.y + physics.dy)
   if not (game.god) then
@@ -60,6 +63,10 @@ s.player.update = function(i, position, size, physics, player, head, shade, dire
         if dir.x == col.normal.x and dir.y == col.normal.y then
           if not (physics.touched_last == dir.color) then
             dir.color = blood_color
+            dir.s = 5
+            if dir.extra_h then
+              dir.extra_h = dir.s
+            end
           end
           physics.touched_last = dir.color
           abort = true
@@ -69,27 +76,31 @@ s.player.update = function(i, position, size, physics, player, head, shade, dire
         local dir = {
           color = blood_color,
           x = col.normal.x,
-          y = col.normal.y
+          y = col.normal.y,
+          s = 5
         }
         sounds.splat:play()
         table.insert(other.slime.dir, dir)
         physics.touched_last = dir.color
       end
-    else
-      if other.hurts and not game.death then
-        sounds.ouch:play()
-        head.eyes.img = sprites.player.eyes_dead
-        game.death = true
-        game.death_timer = 1
-        game.s = 2
-        world:update(i, position.x, position.y, size.w / 10, size.h / 10)
-        position.y = position.y + 6
-        physics.dx = 0
-        physics.dy = 0
-        if other.sprite.img == sprites.spikes then
-          other.sprite.img = sprites.bloody
-          head.r = head.r + (math.pi / 10 * math.random(-1, 1))
-        end
+      physics.wall.dir = -col.normal.x
+      if physics.wall.dir ~= 0 then
+        physics.wall.stick = 4
+      end
+    end
+    if other.hurts and not game.death then
+      sounds.ouch:play()
+      head.eyes.img = sprites.player.eyes_dead
+      game.death = true
+      game.death_timer = 1
+      game.s = 2
+      world:update(i, position.x, position.y, size.w / 10, size.h / 10)
+      position.y = position.y + 6
+      physics.dx = 0
+      physics.dy = 0
+      if other.sprite.img == sprites.spikes then
+        other.sprite.img = sprites.bloody
+        head.r = head.r + (math.pi / 10 * math.random(-1, 1))
       end
     end
     if col.normal.y == -1 then
@@ -100,22 +111,28 @@ s.player.update = function(i, position, size, physics, player, head, shade, dire
       physics.jump.doubled = false
       physics.coyote = 5
     end
-    physics.wall.dir = -col.normal.x
-    if physics.wall.dir ~= 0 then
-      physics.wall.stick = 4
-    end
     if physics.wall.dir ~= 0 then
       physics.jump.doubled = false
     end
   end
   local dist = (math.dist(game.camera, position))
   local new_cam_x = position.x + physics.dir.x * (math.min(100, math.abs(physics.dx * 10)))
-  local new_cam_y = position.y
+  local new_cam_y = position.y - 80 + physics.dy * 2
   game.camera.x = math.cerp(game.camera.x, new_cam_x, game.dt * math.min(10, dist * 2))
   game.camera.y = math.cerp(game.camera.y, new_cam_y, game.dt * math.min(10, dist * 2))
   dist = math.min(5, (math.dist(position, head.eyes)))
   head.eyes.x = math.lerp(head.eyes.x, position.x, game.dt * dist * 10)
   head.eyes.y = math.lerp(head.eyes.y, position.y - 1, game.dt * dist * 10)
+  dist = math.min(5, (math.dist(position, head.eyes)))
+  physics.smooth_dir = math.lerp(physics.smooth_dir, physics.dir.x, game.dt * 30)
+  head.helmet.x = position.x + physics.smooth_dir * 3
+  local py = position.y - size.h / 2 - 6 * 1.5
+  local target_y = math.lerp(head.helmet.y, py, game.dt * dist * 10)
+  if target_y > py then
+    target_y = py
+  end
+  head.helmet.r = math.lerp(head.helmet.r, head.r, game.dt * 40)
+  head.helmet.y = target_y
   if game.death then
     head.s = math.lerp(head.s, 2, game.dt * 4)
     return 

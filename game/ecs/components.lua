@@ -65,3 +65,6 @@ c.hurts = { }
 c.sprite = {
   img = nil
 }
+c.speed = {
+  0
+}

@@ -23,5 +23,6 @@ s.head.draw = function(i, pos, dir, size, head, shade)
   })
   draw(head.body, size, dir, pos.x, pos.y, 1, head.r)
   love.graphics.setColor(1, 1, 1)
+  draw(head.helmet.img, size, dir, head.helmet.x, head.helmet.y, 1.5, head.helmet.r)
   return draw(head.eyes.img, size, dir, head.eyes.x + dir[1] * 2, head.eyes.y, head.s, head.r)
 end

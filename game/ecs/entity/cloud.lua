@@ -1,6 +1,6 @@
-e.block = {
+e.cloud = {
   "position",
   "size",
   "sprite",
-  "slime"
+  "speed"
 }

@@ -35,7 +35,7 @@ love.conf = (t) ->
   t.window.width  = 900
   t.window.height = 600
   t.window.title = "VIKING DASH"
-  t.window.fullscreen = not true
+  t.window.fullscreen = true
 
   t.releases =
     title: "VIKING DASH"

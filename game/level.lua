@@ -15,6 +15,46 @@ local level = {
       1,
       0,
       0
+    },
+    house = {
+      0,
+      0,
+      1
+    },
+    dont = {
+      102 / 255,
+      57 / 255,
+      49 / 255
+    },
+    dirt = {
+      138 / 255,
+      111 / 255,
+      48 / 255
+    },
+    grass = {
+      152 / 255,
+      229 / 255,
+      80 / 255
+    },
+    nothing_dirt = {
+      132 / 255,
+      126 / 255,
+      135 / 255
+    },
+    cloud = {
+      155 / 255,
+      173 / 255,
+      183 / 255
+    },
+    snow = {
+      91 / 255,
+      110 / 255,
+      225 / 255
+    },
+    bush = {
+      215 / 255,
+      123 / 255,
+      186 / 255
     }
   },
   map = { },
@@ -31,6 +71,7 @@ level.load = function(self, path)
   local image = love.image.newImageData(path)
   local map = { }
   for x = 0, image:getWidth() - 1 do
+    map[x] = { }
     for y = 0, image:getHeight() - 1 do
       local r, g, b = image:getPixel(x, y)
       for k, v in pairs(self.registry) do
@@ -38,45 +79,129 @@ level.load = function(self, path)
           local _with_0 = math
           local e = 0.01
           if (_with_0.fuzzy_eq(r, v[1], e)) and (_with_0.fuzzy_eq(g, v[2], e)) and _with_0.fuzzy_eq(b, v[3], e) then
-            self:spawn(k, self.size * x, self.size * y)
+            map[x][y] = self:spawn(k, self.size * x, self.size * y)
           end
         end
       end
     end
   end
+  return 0
 end
 level.spawn = function(self, k, x, y)
-  if k == "player" then
-    print(k)
-  end
+  local grass_conf = {
+    position = {
+      x = x,
+      y = y
+    },
+    size = {
+      w = 24,
+      h = 24
+    },
+    sprite = {
+      img = sprites.grass_full,
+      r = 0
+    },
+    slime = {
+      visible = false,
+      dir = { },
+      color = {
+        1,
+        1,
+        1
+      }
+    }
+  }
   local _exp_0 = k
   if "block" == _exp_0 then
-    local conf = {
-      position = {
-        x = x,
-        y = y
-      },
-      size = {
-        w = 24,
-        h = 24
-      },
-      color = {
-        0,
-        0,
-        0
-      },
-      slime = {
-        visible = false,
-        dir = { },
-        color = {
-          1,
-          1,
+    local conf = grass_conf
+    local id = e.block(conf)
+    world:add(id, x, y, conf.size.w, conf.size.h)
+    return id
+  elseif "block" == _exp_0 then
+    local conf = grass_conf
+    local id = e.block(conf)
+    world:add(id, x, y, conf.size.w, conf.size.h)
+    return id
+  elseif "grass" == _exp_0 then
+    local conf = grass_conf
+    conf.sprite.img = sprites.grass_full
+    local id = e.block(conf)
+    world:add(id, x, y, conf.size.w, conf.size.h)
+    return id
+  elseif "snow" == _exp_0 then
+    local conf = grass_conf
+    conf.sprite.img = sprites.snow
+    local id = e.block(conf)
+    world:add(id, x, y, conf.size.w, conf.size.h)
+    return id
+  elseif "dirt" == _exp_0 then
+    local conf = grass_conf
+    conf.sprite.img = sprites.dirt
+    local id = e.block(conf)
+    world:add(id, x, y, conf.size.w, conf.size.h)
+    return id
+  elseif "nothing_dirt" == _exp_0 then
+    local conf = grass_conf
+    conf.sprite.img = sprites.dirt
+    local id = e.block(conf)
+    return id
+  elseif "cloud" == _exp_0 then
+    for i = 0, math.random(3, 7) do
+      local spr = sprites.clouds[math.random(1, #sprites.clouds)]
+      local conf = {
+        position = {
+          x = x + math.random(-36, 36),
+          y = y + math.random(-16, 16)
+        },
+        size = {
+          w = spr:getWidth() * 1.5,
+          h = spr:getHeight() * 1.5
+        },
+        sprite = {
+          img = spr
+        },
+        speed = {
           1
         }
       }
+      local id = e.cloud(conf)
+    end
+    return id
+  elseif "dont" == _exp_0 then
+    local id = e.nothing({ })
+    world:add(id, x, y, 24, 24)
+    return id
+  elseif "house" == _exp_0 then
+    local conf = {
+      position = {
+        x = x,
+        y = y - 75
+      },
+      size = {
+        w = sprites.house:getWidth() * 1.5,
+        h = sprites.house:getHeight() * 1.5
+      },
+      sprite = {
+        img = sprites.house
+      }
     }
-    local id = e.block(conf)
-    world:add(id, x, y, conf.size.w, conf.size.h)
+    local id = e.house(conf)
+    return id
+  elseif "bush" == _exp_0 then
+    local conf = {
+      position = {
+        x = x,
+        y = y + 6
+      },
+      size = {
+        w = sprites.bush:getWidth(),
+        h = sprites.bush:getHeight()
+      },
+      sprite = {
+        img = sprites.bush
+      }
+    }
+    local id = e.house(conf)
     return id
   elseif "spike" == _exp_0 then
     local conf = {
@@ -144,7 +269,8 @@ level.spawn = function(self, k, x, y)
           timer = 0,
           cooldown = 3
         },
-        coyote = 0
+        coyote = 0,
+        smooth_dir = 0
       },
       color = {
         1,
@@ -163,6 +289,12 @@ level.spawn = function(self, k, x, y)
           img = sprites.player.eyes,
           x = x,
           y = y
+        },
+        helmet = {
+          img = sprites.player.helmet,
+          x = x,
+          y = y - 8 * 1.5,
+          r = 0
         },
         s = 1,
         r = 0

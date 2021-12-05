@@ -4,6 +4,17 @@ level =
     block:  {0, 0, 0}
     player: {1, 243 / 255, 0}
     spike: {1, 0, 0}
+    house: {0, 0, 1}
+    dont: {102 / 255, 57 / 255, 49 / 255}
+    dirt: { 138 / 255, 111 / 255, 48 / 255 }
+
+    grass: { 152 / 255, 229 / 255, 80 / 255 }
+    nothing_dirt: { 132 / 255, 126 / 255, 135 / 255 }
+
+    cloud: { 155 / 255, 173 / 255, 183 / 255 }
+
+    snow: { 91 / 255, 110 / 255, 225 / 255 }
+    bush: { 215 / 255, 123 / 255, 186 / 255 }
 
   map: {}
 
@@ -22,6 +33,7 @@ level.load = (path) =>
   map   = {}
 
   for x = 0, image\getWidth! - 1
+    map[x] = {}
     for y = 0, image\getHeight! - 1
       r, g, b = image\getPixel x, y
 
@@ -29,28 +41,125 @@ level.load = (path) =>
         with math
           e = 0.01
           if (.fuzzy_eq r, v[1], e) and (.fuzzy_eq g, v[2], e) and .fuzzy_eq b, v[3], e
-            @spawn k, @size * x, @size * y
+            map[x][y] = @spawn k, @size * x, @size * y
+
+  return 0
 
 level.spawn = (k, x, y) =>
-  print k if k == "player"
+  grass_conf =
+    position:
+      :x, :y
+    size:
+      w: 24
+      h: 24
+    sprite:
+      img: sprites.grass_full
+      r: 0
+    slime:
+      visible: false
+      dir: {}
+      color: { 1, 1, 1 }
+
   switch k
     when "block"
-      conf =
-        position:
-          :x, :y
-        size:
-          w: 24
-          h: 24
-        color: {0, 0, 0}
-        slime:
-          visible: false
-          dir: {}
-          color: { 1, 1, 1 }
-
+      conf = grass_conf
       id = e.block conf
       world\add id, x, y, conf.size.w, conf.size.h
 
       return id
+
+    when "block"
+      conf = grass_conf
+      id = e.block conf
+      world\add id, x, y, conf.size.w, conf.size.h
+
+      return id
+
+    when "grass"
+      conf = grass_conf
+      conf.sprite.img = sprites.grass_full
+      id = e.block conf
+      world\add id, x, y, conf.size.w, conf.size.h
+
+      return id
+
+    when "snow"
+      conf = grass_conf
+      conf.sprite.img = sprites.snow
+      id = e.block conf
+      world\add id, x, y, conf.size.w, conf.size.h
+
+      return id
+
+    when "dirt"
+      conf = grass_conf
+      conf.sprite.img = sprites.dirt
+      id = e.block conf
+      world\add id, x, y, conf.size.w, conf.size.h
+
+      return id
+
+    when "nothing_dirt"
+      conf = grass_conf
+      conf.sprite.img = sprites.dirt
+      id = e.block conf
+
+      return id
+
+    when "cloud"
+
+      for i = 0, math.random 3, 7
+        spr = sprites.clouds[math.random 1, #sprites.clouds]
+        conf =
+          position:
+            x: x + math.random -36, 36
+            y: y + math.random -16, 16
+          size:
+            w: spr\getWidth! * 1.5
+            h: spr\getHeight! * 1.5
+          sprite:
+            img: spr
+          speed: {1}
+
+        id = e.cloud conf
+
+      return id
+
+    when "dont"
+      id = e.nothing {}
+      world\add id, x, y, 24, 24
+      return id
+
+    when "house"
+      conf =
+        position:
+          :x
+          y: y - 75
+        size:
+          w: sprites.house\getWidth! * 1.5
+          h: sprites.house\getHeight! * 1.5
+        sprite:
+          img: sprites.house
+
+      id = e.house conf
+
+      return id
+
+    when "bush"
+      conf =
+        position:
+          :x
+          y: y + 6
+        size:
+          w: sprites.bush\getWidth!
+          h: sprites.bush\getHeight!
+        sprite:
+          img: sprites.bush
+
+      id = e.house conf
+
+      return id
+
 
     when "spike"
       conf =
@@ -107,7 +216,7 @@ level.spawn = (k, x, y) =>
             timer: 0
             cooldown: 3
           coyote: 0
-
+          smooth_dir: 0
         color: { 1, 1, 0 }
         player: {}
         shade: { 1, 1, 0 }
@@ -117,6 +226,11 @@ level.spawn = (k, x, y) =>
             img: sprites.player.eyes
             x: x
             y: y
+          helmet:
+            img: sprites.player.helmet
+            :x
+            y: y - 8 * 1.5
+            r: 0
           s: 1
           r: 0
 

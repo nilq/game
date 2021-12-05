@@ -11,4 +11,5 @@ s.head.draw = (i, pos, dir, size, head, shade) ->
 
   love.graphics.setColor 1, 1, 1
 
+  draw head.helmet.img, size, dir, head.helmet.x, head.helmet.y, 1.5, head.helmet.r
   draw head.eyes.img, size, dir, head.eyes.x + dir[1] * 2, head.eyes.y, head.s, head.r

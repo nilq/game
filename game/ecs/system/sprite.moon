@@ -5,4 +5,4 @@ s.sprite.draw = (i, pos, size, sprite) ->
     ox = size.w / sprite.img\getWidth!
     oy = size.h / sprite.img\getHeight!
 
-    .draw sprite.img, pos.x + size.w / 2, pos.y + size.h / 2, 0, ox, oy, sprite.img\getWidth! / 2, sprite.img\getHeight! / 2
+    .draw sprite.img, pos.x + size.w / 2, pos.y + size.h / 2, sprite.r or 0, ox, oy, sprite.img\getWidth! / 2, sprite.img\getHeight! / 2

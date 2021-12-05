@@ -29,16 +29,14 @@ game = {
   death = false,
   death_timer = 0
 }
-love.graphics.setBackgroundColor(0.8, 0.8, 0.8)
+love.graphics.setBackgroundColor(255 / 255, 157 / 255, 90 / 255)
 game.load = function(self)
-  for i = 0, #e do
-    e.delete(i)
-  end
-  for i = 0, 1000 do
-    e.nothing({ })
-  end
-  for i = 0, 1000 do
-    e.delete(i)
+  print("new e?", #e)
+  if #e then
+    for i = 1, #e do
+      e.delete(i)
+    end
+    print("after:", #e)
   end
   level:load("levels/test.png")
   self.camera = camera(0, 0, 2.5, 2.5, 0)
@@ -66,7 +64,7 @@ game.update = function(self, dt)
   if self.editor then
     self.bar:update(dt)
   end
-  s(s.player)
+  s(s.player, s.cloud)
   shack:update(dt)
   if self.editor then
     self.camera.sx = math.cerp(self.camera.sx, 1.2, dt * 10)
@@ -87,7 +85,7 @@ game.draw = function(self)
     self.grid:draw()
   end
   shack:apply()
-  s(s.block, s.sprite, s.head)
+  s(s.sprite, s.block, s.head)
   if self.editor then
     self.grid:draw_highlight()
   end

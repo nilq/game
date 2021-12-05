@@ -34,17 +34,16 @@ export game = {
   death_timer: 0
 }
 
-love.graphics.setBackgroundColor 0.8, 0.8, 0.8
+love.graphics.setBackgroundColor 255 / 255, 157 / 255, 90 / 255
 
 game.load = =>
-  for i = 0, #e
-    e.delete i
+  print "new e?", #e
 
-  for i = 0, 1000
-    e.nothing {}
+  if #e
+    for i = 1, #e
+      e.delete i
 
-  for i = 0, 1000
-    e.delete i
+    print "after:", #e
 
   level\load "levels/test.png"
 
@@ -76,7 +75,7 @@ game.update = (dt) =>
 
   @bar\update dt if @editor
 
-  s(s.player)
+  s(s.player, s.cloud)
 
   shack\update dt
 
@@ -97,7 +96,7 @@ game.draw = =>
 
   shack\apply!
 
-  s(s.block, s.sprite, s.head)
+  s(s.sprite, s.block, s.head)
 
   @grid\draw_highlight! if @editor
 

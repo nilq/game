@@ -1,6 +1,6 @@
 jit.opt.start 3, '-loop', 'maxtrace=5000', 'hotloop=100'
 
-require "libs/autobatch"
+--require "libs/autobatch"
 
 export e, c, s = unpack (require "libs/ecs")
 
@@ -10,10 +10,13 @@ require "game/ecs/components"
 require "game/ecs/entity/player"
 require "game/ecs/entity/block"
 require "game/ecs/entity/spike"
+require "game/ecs/entity/house"
+require "game/ecs/entity/cloud"
 
 require "game/ecs/system/block"
 require "game/ecs/system/head"
 require "game/ecs/system/sprite"
+require "game/ecs/system/cloud"
 
 baton   = require "libs/baton"
 console = require "libs/console"
