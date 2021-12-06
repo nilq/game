@@ -16,6 +16,10 @@ s.head = {
   "shade"
 }
 s.head.draw = function(i, pos, dir, size, head, shade)
+  if head.trail.on then
+    love.graphics.setColor(1, 1, 1, head.trail.a)
+    head.trail.trail:draw()
+  end
   love.graphics.setColor({
     238 / 255,
     195 / 255,

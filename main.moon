@@ -23,8 +23,10 @@ baton   = require "libs/baton"
 console = require "libs/console"
 
 export bump = require "libs/bump"
+export trail = require "libs/trail"
 
 state = require "game"
+menu = require "menu"
 
 export input = baton.new
   controls:
@@ -43,7 +45,6 @@ love.load = ->
   export world = bump.newWorld!
 
   console.load!
-  state\load!
 
   console.defineCommand "editor", "Toggle level-editor.", ->
     console.i "Level editor: " .. tostring not state.editor
@@ -55,16 +56,29 @@ love.load = ->
     state.god = not state.god
 
 love.update = (dt) ->
-  console.update dt
-  input\update!
-  state\update dt
+  if menu.timer > 0
+    menu\update dt
+  else
+    if not menu.loaded
+      state\load!
+      menu.loaded = true
+      return
+
+    console.update dt
+    input\update dt
+    state\update dt
+    trail\update dt
 
 love.draw = ->
   with love.graphics
     .setColor 0, 0, 0
     .print "FPS " .. love.timer.getFPS!, 10, 10
 
-  state\draw!
+  if menu.timer > 0
+    menu\draw!
+  else
+    state\draw!
+
   console.draw!
 
 love.keypressed = (key) ->
@@ -77,18 +91,18 @@ love.keypressed = (key) ->
     when "escape"
       love.event.quit!
 
-  state\press key
+  state\press key if menu.timer == 0
 
 love.keyreleased = ->
   return
 
 love.textinput = (t) ->
   console.textinput t
-  state\textinput t
+  state\textinput t if menu.timer == 0
 
 love.mousepressed = (x, y, button) ->
   console.mousepressed x, y, button
-  state\mousepressed x, y, button
+  state\mousepressed x, y, button if menu.timer == 0
 
 -- weird shit:
 

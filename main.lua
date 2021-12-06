@@ -15,7 +15,9 @@ require("game/ecs/system/cloud")
 local baton = require("libs/baton")
 local console = require("libs/console")
 bump = require("libs/bump")
+trail = require("libs/trail")
 local state = require("game")
+local menu = require("menu")
 input = baton.new({
   controls = {
     left = {
@@ -57,7 +59,6 @@ input = baton.new({
 love.load = function()
   world = bump.newWorld()
   console.load()
-  state:load()
   console.defineCommand("editor", "Toggle level-editor.", function()
     console.i("Level editor: " .. tostring(not state.editor))
     state.editor = not state.editor
@@ -69,9 +70,19 @@ love.load = function()
   end)
 end
 love.update = function(dt)
-  console.update(dt)
-  input:update()
-  return state:update(dt)
+  if menu.timer > 0 then
+    return menu:update(dt)
+  else
+    if not menu.loaded then
+      state:load()
+      menu.loaded = true
+      return 
+    end
+    console.update(dt)
+    input:update(dt)
+    state:update(dt)
+    return trail:update(dt)
+  end
 end
 love.draw = function()
   do
@@ -79,7 +90,11 @@ love.draw = function()
     _with_0.setColor(0, 0, 0)
     _with_0.print("FPS " .. love.timer.getFPS(), 10, 10)
   end
-  state:draw()
+  if menu.timer > 0 then
+    menu:draw()
+  else
+    state:draw()
+  end
   return console.draw()
 end
 love.keypressed = function(key)
@@ -92,16 +107,22 @@ love.keypressed = function(key)
   elseif "escape" == _exp_0 then
     love.event.quit()
   end
-  return state:press(key)
+  if menu.timer == 0 then
+    return state:press(key)
+  end
 end
 love.keyreleased = function() end
 love.textinput = function(t)
   console.textinput(t)
-  return state:textinput(t)
+  if menu.timer == 0 then
+    return state:textinput(t)
+  end
 end
 love.mousepressed = function(x, y, button)
   console.mousepressed(x, y, button)
-  return state:mousepressed(x, y, button)
+  if menu.timer == 0 then
+    return state:mousepressed(x, y, button)
+  end
 end
 math.fuzzy_eq = function(a, b, eps)
   return a == b or (math.abs(a - b)) < eps

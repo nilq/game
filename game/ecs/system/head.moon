@@ -6,6 +6,10 @@ draw = (sprite, size, dir, x, y, s, r) ->
 
 s.head = { "position", "direction", "size", "head", "shade" }
 s.head.draw = (i, pos, dir, size, head, shade) ->
+  if head.trail.on
+    love.graphics.setColor 1, 1, 1, head.trail.a
+    head.trail.trail\draw!
+
   love.graphics.setColor { 238 / 255, 195 / 255, 154 / 255  }
   draw head.body, size, dir, pos.x, pos.y, 1, head.r
 

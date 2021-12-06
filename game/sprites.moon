@@ -21,6 +21,9 @@ sprites =
   snow: img "things/snow"
 
   door: img "things/doort"
+  sun: img "sun"
+
+  win: love.graphics.newImage "res/youwin.jpg"
 
   clouds: {
     img "cloud1",

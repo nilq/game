@@ -32,17 +32,17 @@ love.run = ->
     love.timer.sleep 0.001 if love.timer
 
 love.conf = (t) ->
-  t.window.width  = 900
-  t.window.height = 600
-  t.window.title = "VIKING DASH"
+  t.window.width  = 1200
+  t.window.height = 800
+  t.window.title = "TO VALHALLAH"
   t.window.fullscreen = true
 
   t.releases =
-    title: "VIKING DASH"
-    package: "viking-dash"
+    title: "TO VALHALLAH"
+    package: "to-valhallah"
     version: "1.0.0"
     author: "nilq"
-    description: "play the game please"
+    description: "Speedrun to a worthy death."
     homepage: "net.net"
     identifier: nil
     excludeFileList: {}

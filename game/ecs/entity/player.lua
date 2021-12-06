@@ -132,6 +132,8 @@ s.player.update = function(i, position, size, physics, player, head, shade, dire
   dist = math.min(5, (math.dist(position, head.eyes)))
   head.eyes.x = math.lerp(head.eyes.x, position.x, game.dt * dist * 10)
   head.eyes.y = math.lerp(head.eyes.y, position.y - 1, game.dt * dist * 10)
+  head.trail.trail:setPosition(position.x + size.w / 2, position.y + size.h / 2)
+  head.trail.a = math.max(0, head.trail.a - game.dt * 2)
   dist = math.min(5, (math.dist(position, head.eyes)))
   physics.smooth_dir = math.lerp(physics.smooth_dir, physics.dir.x, game.dt * 30)
   head.helmet.x = position.x + physics.smooth_dir * 3
@@ -160,6 +162,11 @@ s.player.update = function(i, position, size, physics, player, head, shade, dire
     shack:setShake(7)
     head.s = 2
     sounds.dash:play()
+    head.trail.on = true
+    head.trail.a = 1
+  end
+  if physics.dash.timer < 2.5 then
+    head.trail.on = false
   end
   local can_jump = physics.grounded or physics.coyote ~= 0
   local should_reset_double = not can_jump

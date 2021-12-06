@@ -296,9 +296,22 @@ level.spawn = (k, x, y) =>
             :x
             y: y - 8 * 1.5
             r: 0
+          trail:
+            on: false
+            a: 1
+            trail:
+              trail\new
+                type: "point"
+                content:
+                  type: "image"
+                  source: sprites.player.body
+                duration: 0.2
+                amount: 100
+                fade: "shrink"
           s: 1
           r: 0
 
+      conf.head.trail.trail\setPosition x, y
       id = e.player conf
 
       world\add id, x, y, conf.size.w, conf.size.h

@@ -29,6 +29,8 @@ sounds.music\setVolume 0.4
 export GEN = 0
 export LEVEL = 0
 
+night_levels = { [4]: true, [5]: true }
+
 export game = {
   dt: 0
   time: 0 -- incrementing forever!!!
@@ -39,11 +41,17 @@ export game = {
   death_timer: 0
   level: 0
   level_timer: 0
+  sunset_y: 0
 }
 
 love.graphics.setBackgroundColor 255 / 255, 157 / 255, 90 / 255
 
 game.load = =>
+  unless night_levels[LEVEL]
+    love.graphics.setBackgroundColor 255 / 255, 157 / 255, 90 / 255
+  else
+    love.graphics.setBackgroundColor 15 / 255, 10 / 255, 57 / 255
+
   GEN += 1
   print "new e?", #e
 
@@ -61,7 +69,8 @@ game.load = =>
 
     print "after:", #e
 
-  level\load "levels/#{LEVEL}.png"
+  unless LEVEL == 6
+    level\load "levels/#{LEVEL}.png"
 
   @camera = camera 0, 0, 2.5, 2.5, 0
   @grid   = grid.make!
@@ -76,8 +85,13 @@ game.load = =>
   @death = false
   @death_timer = 0
 
+  @sunset_y = @camera.y - @camera\height! / 4
+  @osy = level.player_coords.y - @camera\height! / 3
+  @osx = @camera.x - @camera\width! / 3
+
 game.restart_level = =>
-  love.load!
+  export world = bump.newWorld!
+  @load!
   collectgarbage!
 
 game.update = (dt) =>
@@ -86,6 +100,10 @@ game.update = (dt) =>
 
   @death_timer = math.max 0, @death_timer - dt
   @level_timer = math.max 0, @level_timer - dt
+
+  @sunset_y = math.lerp @sunset_y, @camera.y - @camera\height! / 4, dt * 4
+  --@osy = math.cerp @osy, @sunset_y, dt * 10
+  @osx = @camera.x - @camera\width! / 3
 
   if @death and @death_timer == 0
     @restart_level!
@@ -112,11 +130,23 @@ game.update = (dt) =>
     @camera.sy = math.cerp @camera.sy, 2.5, dt * 10
 
 game.draw = =>
+  return unless @camera
+
   @camera\set!
 
   @grid\draw! if @editor
 
   shack\apply!
+
+  unless night_levels[LEVEL]
+    with love.graphics
+
+      .setColor 1, 1, 0, 0.6
+      .draw sprites.sun, @osx, @osy + (@osy - @sunset_y) / 10 - @camera\height! / 10, 0, 0.5, 0.5
+
+      .setColor 1, 1, 1
+      .draw sprites.clouds[1], @osx, @osy + (@osy - @sunset_y) / 10 + @camera\height! / 8, 0, 2.5, 2.5
+      .draw sprites.clouds[2], @osx + 90, @osy + (@osy - @sunset_y) / 10 + @camera\height! / 7, 0, 2.5, 2.5
 
   s(s.sprite, s.block, s.head)
 
@@ -135,6 +165,14 @@ game.draw = =>
     with love.graphics
       .setColor 0.2, 0.2, 0.2, 1 - @level_timer
       .rectangle "fill", 0, 0, .getWidth!, .getHeight!
+
+  if LEVEL == 6
+    with love.graphics
+      .setColor 0, 0, 0
+      .rectangle "fill", 0, 0, .getWidth!, .getHeight!
+
+      .setColor 1, 1, 1
+      .draw sprites.win, .getWidth! / 2 - sprites.win\getWidth! / 2, .getHeight! / 2 - sprites.win\getHeight! / 2
 
 game.press = (key) =>
   @bar\press key

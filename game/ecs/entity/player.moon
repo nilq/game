@@ -119,6 +119,9 @@ s.player.update = (i, position, size, physics, player, head, shade, direction) -
   head.eyes.x = math.lerp head.eyes.x, position.x, game.dt * dist * 10
   head.eyes.y = math.lerp head.eyes.y, position.y - 1, game.dt * dist * 10
 
+  head.trail.trail\setPosition position.x + size.w / 2, position.y + size.h / 2
+  head.trail.a = math.max 0, head.trail.a - game.dt * 2
+
   dist = math.min 5, (math.dist position, head.eyes)
 
   physics.smooth_dir = math.lerp physics.smooth_dir, physics.dir.x, game.dt * 30
@@ -156,6 +159,12 @@ s.player.update = (i, position, size, physics, player, head, shade, direction) -
     head.s = 2
 
     sounds.dash\play!
+
+    head.trail.on = true
+    head.trail.a = 1
+
+  if physics.dash.timer < 2.5
+    head.trail.on = false
 
   can_jump = physics.grounded or physics.coyote != 0
 
